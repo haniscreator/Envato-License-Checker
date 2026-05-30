@@ -125,40 +125,46 @@
         </div>
 
         <!-- 24h Summary card -->
-        <div class="bg-gradient-to-br from-slate-900 to-primary/20 text-white border border-slate-800 rounded-3xl p-6 shadow-xl flex flex-col justify-between relative overflow-hidden">
+        <div class="bg-gradient-to-br from-slate-900 to-slate-950 text-white border border-slate-800 rounded-3xl p-6 shadow-xl flex flex-col justify-between relative overflow-hidden">
             <div class="absolute right-[-10%] top-[-10%] h-32 w-32 rounded-full bg-primary/10 blur-xl"></div>
             <div>
-                <h3 class="text-lg font-bold">24h Verification Summary</h3>
-                <p class="text-xs text-primary/70 mt-1">Status of API queries in the past day.</p>
+                <h3 class="text-lg font-extrabold tracking-tight text-white">24h Verification Summary</h3>
+                <p class="text-xs text-slate-400 mt-1">Status of API queries in the past day.</p>
 
-                <div class="mt-8 space-y-4">
+                <div class="mt-8 space-y-5">
                     <div>
-                        <div class="flex justify-between text-sm font-semibold mb-1">
+                        <div class="flex justify-between text-sm font-semibold mb-1 text-slate-200">
                             <span>Successful Activations</span>
-                            <span>{{ $stats['checks_24h'] > 0 ? round(($stats['checks_success_24h'] / $stats['checks_24h']) * 100) : 0 }}%</span>
+                            <span class="text-emerald-400 font-bold">{{ $stats['checks_24h'] > 0 ? round(($stats['checks_success_24h'] / $stats['checks_24h']) * 100) : 0 }}%</span>
                         </div>
-                        <div class="w-full bg-slate-800 h-2.5 rounded-full overflow-hidden">
-                            <div class="bg-emerald-400 h-full rounded-full" style="width: {{ $stats['checks_24h'] > 0 ? ($stats['checks_success_24h'] / $stats['checks_24h']) * 100 : 0 }}%"></div>
+                        <div class="w-full bg-slate-950 h-2.5 rounded-full overflow-hidden border border-slate-800/40">
+                            <div class="bg-gradient-to-r from-emerald-500 to-teal-400 h-full rounded-full" style="width: {{ $stats['checks_24h'] > 0 ? ($stats['checks_success_24h'] / $stats['checks_24h']) * 100 : 0 }}%"></div>
                         </div>
-                        <span class="text-[10px] text-slate-400 mt-1 block">{{ $stats['checks_success_24h'] }} requests allowed</span>
+                        <div class="flex items-center justify-between mt-1.5 text-xs text-slate-400">
+                            <span>{{ $stats['checks_success_24h'] }} requests allowed</span>
+                            <span class="text-[10px] text-emerald-400/80 bg-emerald-500/10 px-2 py-0.5 rounded-full font-medium">Valid</span>
+                        </div>
                     </div>
 
                     <div>
-                        <div class="flex justify-between text-sm font-semibold mb-1">
+                        <div class="flex justify-between text-sm font-semibold mb-1 text-slate-200">
                             <span>Failed Requests</span>
-                            <span>{{ $stats['checks_24h'] > 0 ? round(($stats['checks_failed_24h'] / $stats['checks_24h']) * 100) : 0 }}%</span>
+                            <span class="text-rose-400 font-bold">{{ $stats['checks_24h'] > 0 ? round(($stats['checks_failed_24h'] / $stats['checks_24h']) * 100) : 0 }}%</span>
                         </div>
-                        <div class="w-full bg-slate-800 h-2.5 rounded-full overflow-hidden">
-                            <div class="bg-rose-400 h-full rounded-full" style="width: {{ $stats['checks_24h'] > 0 ? ($stats['checks_failed_24h'] / $stats['checks_24h']) * 100 : 0 }}%"></div>
+                        <div class="w-full bg-slate-950 h-2.5 rounded-full overflow-hidden border border-slate-800/40">
+                            <div class="bg-gradient-to-r from-rose-500 to-red-400 h-full rounded-full" style="width: {{ $stats['checks_24h'] > 0 ? ($stats['checks_failed_24h'] / $stats['checks_24h']) * 100 : 0 }}%"></div>
                         </div>
-                        <span class="text-[10px] text-slate-400 mt-1 block">{{ $stats['checks_failed_24h'] }} requests rejected</span>
+                        <div class="flex items-center justify-between mt-1.5 text-xs text-slate-400">
+                            <span>{{ $stats['checks_failed_24h'] }} requests rejected</span>
+                            <span class="text-[10px] text-rose-400/80 bg-rose-500/10 px-2 py-0.5 rounded-full font-medium">Blocked</span>
+                        </div>
                     </div>
                 </div>
             </div>
 
-            <div class="mt-8 border-t border-slate-800 pt-4 flex items-center justify-between text-xs text-slate-400">
-                <span>Total processed:</span>
-                <span class="font-bold text-white text-sm">{{ $stats['checks_24h'] }}</span>
+            <div class="mt-8 border-t border-slate-800 pt-5 flex items-center justify-between text-xs font-semibold text-slate-400">
+                <span class="uppercase tracking-wider">Total processed:</span>
+                <span class="font-extrabold text-white text-base bg-slate-900/80 border border-slate-800 px-3 py-1 rounded-xl">{{ $stats['checks_24h'] }}</span>
             </div>
         </div>
     </div>
