@@ -133,4 +133,55 @@ class LicenseAdminActionsTest extends TestCase
         $response->assertRedirect();
         $this->assertDatabaseMissing('licenses', ['id' => $this->license->id]);
     }
+
+    /**
+     * Test updating settings including primary_color with valid values.
+     */
+    public function test_updating_settings_succeeds_with_valid_primary_color(): void
+    {
+        $this->actingAs($this->admin);
+
+        $response = $this->post('/admin/settings', [
+            'envato_api_key' => 'NEW-API-KEY-VALUE',
+            'allowed_item_ids' => '1111,2222',
+            'primary_color' => '#123456',
+        ]);
+
+        $response->assertSessionHasNoErrors();
+        $response->assertRedirect();
+        $this->assertDatabaseHas('settings', ['key' => 'primary_color', 'value' => '#123456']);
+        $this->assertDatabaseHas('settings', ['key' => 'envato_api_key', 'value' => 'NEW-API-KEY-VALUE']);
+    }
+
+    /**
+     * Test updating settings with invalid primary_color fails.
+     */
+    public function test_updating_settings_fails_with_invalid_primary_color(): void
+    {
+        $this->actingAs($this->admin);
+
+        // Test missing color
+        $response = $this->post('/admin/settings', [
+            'primary_color' => '',
+        ]);
+        $response->assertSessionHasErrors(['primary_color']);
+
+        // Test invalid format (no # prefix)
+        $response = $this->post('/admin/settings', [
+            'primary_color' => '123456',
+        ]);
+        $response->assertSessionHasErrors(['primary_color']);
+
+        // Test invalid format (invalid character)
+        $response = $this->post('/admin/settings', [
+            'primary_color' => '#12345g',
+        ]);
+        $response->assertSessionHasErrors(['primary_color']);
+
+        // Test invalid length
+        $response = $this->post('/admin/settings', [
+            'primary_color' => '#123',
+        ]);
+        $response->assertSessionHasErrors(['primary_color']);
+    }
 }

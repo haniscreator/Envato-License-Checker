@@ -16,13 +16,13 @@
                     </svg>
                 </span>
                 <input type="text" name="search" value="{{ request('search') }}"
-                    class="block w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 text-sm transition-all placeholder-slate-400"
+                    class="block w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary text-sm transition-all placeholder-slate-400"
                     placeholder="Search by code, domain, IP, message...">
             </div>
 
             <div class="w-full sm:w-48">
                 <select name="status" onchange="this.form.submit()"
-                    class="block w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 text-sm transition-all">
+                    class="block w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary text-sm transition-all">
                     <option value="">All Results</option>
                     <option value="success" {{ request('status') === 'success' ? 'selected' : '' }}>Success (Passed)</option>
                     <option value="failed" {{ request('status') === 'failed' ? 'selected' : '' }}>Failed (Blocked)</option>

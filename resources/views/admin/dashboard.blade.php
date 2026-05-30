@@ -13,7 +13,7 @@
                 <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider block">Total Licenses</span>
                 <span class="text-3xl font-extrabold text-slate-900 mt-2 block">{{ $stats['total_licenses'] }}</span>
             </div>
-            <div class="h-12 w-12 rounded-2xl bg-indigo-50 flex items-center justify-center text-indigo-500">
+            <div class="h-12 w-12 rounded-2xl bg-primary/10 flex items-center justify-center text-primary">
                 <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z" />
                 </svg>
@@ -93,7 +93,7 @@
                     <div class="flex flex-col items-center flex-1 group z-10">
                         <div class="w-full flex items-end justify-center space-x-1.5 h-48 mb-2">
                             <!-- Success bar -->
-                            <div style="height: {{ max($successHeight, 2) }}%;" class="w-4 bg-indigo-500 rounded-t-md transition-all duration-300 group-hover:bg-indigo-600 relative" title="Success: {{ $data['success'] }}">
+                            <div style="height: {{ max($successHeight, 2) }}%;" class="w-4 bg-primary rounded-t-md transition-all duration-300 hover:opacity-90 relative" title="Success: {{ $data['success'] }}">
                                 <div class="absolute bottom-full left-1/2 -translate-x-1/2 bg-slate-900 text-white text-[10px] px-1.5 py-0.5 rounded shadow opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap mb-1 z-20 pointer-events-none">
                                     {{ $data['success'] }} OK
                                 </div>
@@ -112,10 +112,9 @@
                 @endforeach
             </div>
 
-            <!-- Legend -->
             <div class="flex items-center space-x-4 justify-center mt-6 text-xs font-semibold">
                 <div class="flex items-center">
-                    <span class="h-3 w-3 bg-indigo-500 rounded-full mr-2"></span>
+                    <span class="h-3 w-3 bg-primary rounded-full mr-2"></span>
                     <span class="text-slate-600">Success Verification</span>
                 </div>
                 <div class="flex items-center">
@@ -126,11 +125,11 @@
         </div>
 
         <!-- 24h Summary card -->
-        <div class="bg-gradient-to-br from-slate-900 to-indigo-950 text-white border border-slate-800 rounded-3xl p-6 shadow-xl flex flex-col justify-between relative overflow-hidden">
-            <div class="absolute right-[-10%] top-[-10%] h-32 w-32 rounded-full bg-indigo-500/10 blur-xl"></div>
+        <div class="bg-gradient-to-br from-slate-900 to-primary/20 text-white border border-slate-800 rounded-3xl p-6 shadow-xl flex flex-col justify-between relative overflow-hidden">
+            <div class="absolute right-[-10%] top-[-10%] h-32 w-32 rounded-full bg-primary/10 blur-xl"></div>
             <div>
                 <h3 class="text-lg font-bold">24h Verification Summary</h3>
-                <p class="text-xs text-indigo-200 mt-1">Status of API queries in the past day.</p>
+                <p class="text-xs text-primary/70 mt-1">Status of API queries in the past day.</p>
 
                 <div class="mt-8 space-y-4">
                     <div>
@@ -170,7 +169,7 @@
         <div class="bg-white border border-slate-200 rounded-3xl p-6 shadow-sm">
             <div class="flex items-center justify-between mb-4">
                 <h3 class="text-base font-bold text-slate-900">Recent Licenses</h3>
-                <a href="{{ route('admin.licenses.index') }}" class="text-xs font-semibold text-indigo-600 hover:text-indigo-500">View All</a>
+                <a href="{{ route('admin.licenses.index') }}" class="text-xs font-semibold text-primary hover:opacity-85">View All</a>
             </div>
 
             <div class="overflow-x-auto">
@@ -209,7 +208,7 @@
         <div class="bg-white border border-slate-200 rounded-3xl p-6 shadow-sm">
             <div class="flex items-center justify-between mb-4">
                 <h3 class="text-base font-bold text-slate-900">Recent API Checks</h3>
-                <a href="{{ route('admin.logs.index') }}" class="text-xs font-semibold text-indigo-600 hover:text-indigo-500">View All</a>
+                <a href="{{ route('admin.logs.index') }}" class="text-xs font-semibold text-primary hover:opacity-85">View All</a>
             </div>
 
             <div class="overflow-x-auto">

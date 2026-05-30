@@ -31,6 +31,7 @@ class DatabaseSeeder extends Seeder
             'envato_api_key' => env('ENVATO_API_KEY', ''),
             'allowed_item_ids' => env('ALLOWED_ITEM_IDS', ''),
             'allow_auto_domain_transfer' => '0', // default disabled, can be toggled to '1'
+            'primary_color' => '#f67e39',
         ];
 
         foreach ($settings as $key => $value) {

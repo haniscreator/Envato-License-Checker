@@ -16,13 +16,13 @@
                     </svg>
                 </span>
                 <input type="text" name="search" value="{{ request('search') }}"
-                    class="block w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 text-sm transition-all placeholder-slate-400"
+                    class="block w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary text-sm transition-all placeholder-slate-400"
                     placeholder="Search by purchase code, domain, or buyer...">
             </div>
 
             <div class="w-full sm:w-48">
                 <select name="status" onchange="this.form.submit()"
-                    class="block w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 text-sm transition-all">
+                    class="block w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary text-sm transition-all">
                     <option value="">All Statuses</option>
                     <option value="active" {{ request('status') === 'active' ? 'selected' : '' }}>Active</option>
                     <option value="revoked" {{ request('status') === 'revoked' ? 'selected' : '' }}>Revoked</option>
@@ -57,8 +57,13 @@
                             <!-- Purchase Code & Item -->
                             <td class="py-4 px-6">
                                 <div class="font-mono font-bold text-slate-900 mb-1 select-all">{{ $license->purchase_code }}</div>
-                                <div class="text-[10px] text-slate-400 font-medium truncate max-w-[200px]" title="{{ $license->item_name }} (ID: {{ $license->item_id }})">
+                                <div class="text-[10px] text-slate-500 font-semibold truncate max-w-[240px]" title="{{ $license->item_name }}">
                                     {{ $license->item_name }}
+                                </div>
+                                <div class="text-[9px] text-slate-400 font-semibold mt-1 space-x-1.5 flex items-center">
+                                    <span class="bg-slate-100 text-slate-650 px-1.5 py-0.5 rounded border border-slate-200/50">{{ $license->license_type }}</span>
+                                    <span class="text-slate-300">•</span>
+                                    <span>ID: {{ $license->item_id }}</span>
                                 </div>
                             </td>
 
@@ -66,7 +71,7 @@
                             <td class="py-4 px-6">
                                 <div class="flex items-center space-x-2">
                                     <span class="font-mono bg-slate-100 text-slate-700 px-2 py-1 rounded-md text-[11px] border border-slate-200/50">{{ $license->domain }}</span>
-                                    <button onclick="openEditModal({{ $license->id }}, '{{ $license->domain }}')" class="text-slate-400 hover:text-indigo-600 transition-colors p-1" title="Edit Domain">
+                                    <button type="button" onclick="openEditModal({{ $license->id }}, '{{ $license->domain }}')" class="text-slate-400 hover:text-primary transition-colors p-1" title="Edit Domain">
                                         <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                                             <path stroke-linecap="round" stroke-linejoin="round" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
                                         </svg>
@@ -80,14 +85,18 @@
                             </td>
 
                             <!-- Dates -->
-                            <td class="py-4 px-6 text-slate-500 space-y-1">
+                            <td class="py-4 px-6 text-slate-500 space-y-2">
                                 <div>
-                                    <span class="text-[10px] font-semibold text-slate-400 uppercase tracking-wider block">Registered:</span>
-                                    {{ $license->created_at->format('M j, Y H:i') }}
+                                    <span class="text-[9px] font-bold text-slate-400 uppercase tracking-wider block">Purchased:</span>
+                                    <span class="font-semibold text-slate-700">{{ $license->purchase_date ? $license->purchase_date->format('M j, Y H:i') : 'Unknown' }}</span>
                                 </div>
                                 <div>
-                                    <span class="text-[10px] font-semibold text-slate-400 uppercase tracking-wider block">Last checked:</span>
-                                    {{ $license->last_checked_at ? $license->last_checked_at->format('M j, Y H:i') : 'Never' }}
+                                    <span class="text-[9px] font-bold text-slate-400 uppercase tracking-wider block">Registered:</span>
+                                    <span class="font-semibold text-slate-700">{{ $license->created_at->format('M j, Y H:i') }}</span>
+                                </div>
+                                <div>
+                                    <span class="text-[9px] font-bold text-slate-400 uppercase tracking-wider block">Last Checked:</span>
+                                    <span class="font-semibold text-slate-700">{{ $license->last_checked_at ? $license->last_checked_at->format('M j, Y H:i') : 'Never' }}</span>
                                 </div>
                             </td>
 
@@ -158,7 +167,7 @@
                 @method('PUT')
                 <div class="bg-white px-6 pt-6 pb-4 sm:p-6 sm:pb-4">
                     <div class="sm:flex sm:items-start">
-                        <div class="mx-auto shrink-0 flex items-center justify-center h-12 w-12 rounded-2xl bg-indigo-50 text-indigo-600 sm:mx-0 sm:h-10 sm:w-10">
+                        <div class="mx-auto shrink-0 flex items-center justify-center h-12 w-12 rounded-2xl bg-primary/10 text-primary sm:mx-0 sm:h-10 sm:w-10">
                             <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
                             </svg>
@@ -171,17 +180,17 @@
                             <div class="mt-4">
                                 <label for="modal-domain-input" class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Domain Name</label>
                                 <input type="text" id="modal-domain-input" name="domain" required
-                                    class="block w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 text-sm transition-all placeholder-slate-400"
+                                    class="block w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary text-sm transition-all placeholder-slate-400"
                                     placeholder="clientdomain.com">
                             </div>
                         </div>
                     </div>
                 </div>
                 <div class="bg-slate-50 px-6 py-4 sm:px-6 sm:flex sm:flex-row-reverse gap-3 rounded-b-3xl border-t border-slate-100">
-                    <button type="submit" class="w-full inline-flex justify-center rounded-xl border border-transparent shadow-sm px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-sm font-semibold text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 sm:w-auto">
+                    <button type="submit" class="w-full inline-flex justify-center rounded-xl border border-transparent shadow-sm px-4 py-2 bg-primary hover:opacity-90 text-sm font-semibold text-white focus:outline-none focus:ring-2 focus:ring-primary sm:w-auto">
                         Save Changes
                     </button>
-                    <button type="button" onclick="closeEditModal()" class="mt-3 w-full inline-flex justify-center rounded-xl border border-slate-200 px-4 py-2 bg-white text-sm font-semibold text-slate-700 hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 sm:mt-0 sm:w-auto">
+                    <button type="button" onclick="closeEditModal()" class="mt-3 w-full inline-flex justify-center rounded-xl border border-slate-200 px-4 py-2 bg-white text-sm font-semibold text-slate-700 hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-primary sm:mt-0 sm:w-auto">
                         Cancel
                     </button>
                 </div>
@@ -219,7 +228,7 @@
                             <div class="mt-4">
                                 <label for="confirm-password-input" class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Admin Password</label>
                                 <input type="password" id="confirm-password-input" name="password" required
-                                    class="block w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 text-sm transition-all"
+                                    class="block w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary text-sm transition-all"
                                     placeholder="Enter password">
                             </div>
                         </div>
@@ -229,7 +238,7 @@
                     <button type="submit" id="confirm-submit-button" class="w-full inline-flex justify-center rounded-xl border border-transparent shadow-sm px-4 py-2 bg-amber-600 hover:bg-amber-700 text-sm font-semibold text-white focus:outline-none focus:ring-2 focus:ring-amber-500 sm:w-auto">
                         Confirm Action
                     </button>
-                    <button type="button" onclick="closeConfirmModal()" class="mt-3 w-full inline-flex justify-center rounded-xl border border-slate-200 px-4 py-2 bg-white text-sm font-semibold text-slate-700 hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 sm:mt-0 sm:w-auto">
+                    <button type="button" onclick="closeConfirmModal()" class="mt-3 w-full inline-flex justify-center rounded-xl border border-slate-200 px-4 py-2 bg-white text-sm font-semibold text-slate-700 hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-primary sm:mt-0 sm:w-auto">
                         Cancel
                     </button>
                 </div>
@@ -246,7 +255,7 @@
         const form = document.getElementById('edit-domain-form');
         const input = document.getElementById('modal-domain-input');
 
-        form.action = `/admin/licenses/${id}`;
+        form.action = `{{ route('admin.licenses.index') }}/${id}`;
         input.value = currentDomain;
 
         modal.classList.remove('hidden');

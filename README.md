@@ -1,58 +1,191 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Envato API License Checker
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+A single-domain license verification and management server built with Laravel, MySQL, and Tailwind CSS v4. Designed to verify CodeCanyon/Envato purchase codes for your client products and control domain bindings through an administrative panel.
 
-## About Laravel
+---
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## ─── System Architecture ───
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
-
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
-
-## Learning Laravel
-
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
-
-In addition, [Laracasts](https://laracasts.com) contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
-
-You can also watch bite-sized lessons with real-world projects on [Laravel Learn](https://laravel.com/learn), where you will be guided through building a Laravel application from scratch while learning PHP fundamentals.
-
-## Agentic Development
-
-Laravel's predictable structure and conventions make it ideal for AI coding agents like Claude Code, Cursor, and GitHub Copilot. Install [Laravel Boost](https://laravel.com/docs/ai) to supercharge your AI workflow:
-
-```bash
-composer require laravel/boost --dev
-
-php artisan boost:install
+```
+[ Client Website (e.g. Healthy-AI Monolith) ]
+                   │
+                   ▼  (POST /api/licenses/verify)
+      [ License Checker API Server ]
+                   │
+         ┌─────────┴─────────┐
+         ▼                   ▼
+  [ Local MySQL DB ]   [ Envato API ]
+(Cache & Status Rules) (Purchase Validation)
 ```
 
-Boost provides your agent 15+ tools and skills that help agents build Laravel applications while following best practices.
+---
 
-## Contributing
+## ─── Core Features ───
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+1. **Envato API Verification Layer**
+   - Automatically verifies purchase codes against the official Envato Market API.
+   - Restricts verification to specific CodeCanyon Item IDs (configurable in settings).
+   - Automatically saves purchaser information, item name, purchase date, and license type (Regular vs. Extended) upon first activation.
 
-## Code of Conduct
+2. **Localhost & Sandbox Bypass**
+   - Skips domain registration and lock bindings if requests come from `localhost`, `127.0.0.1`, `.local` domains, or sandbox environments. 
+   - Clients can safely install, develop, and test your product locally without using up their single production domain binding.
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+3. **Self-Service Automatic Domain Transfer**
+   - Enables clients to transfer their license to a new domain automatically by providing the `old_domain` parameter in the API payload.
+   - Eliminates manual administrator intervention for standard domain migrations.
 
-## Security Vulnerabilities
+4. **Dynamic Branding & Theme Color**
+   - Dynamic dashboard primary color configurable via the Admin Settings page (supports any hex color picker, e.g. `#f67e39`).
+   - Automatically generates a dynamic theme-colored SVG favicon matching the selected brand color.
+   - No hardcoded colors—theme classes utilize Tailwind CSS v4 variables mapped directly from the database.
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+5. **Premium Admin Dashboard**
+   - High-performance UI built with **Tailwind CSS v4** and compiled with **Vite**.
+   - Features real-time statistics (Active/Revoked counts, past 24h API traffic volumes).
+   - Includes a dynamic 7-day API activity bar chart.
+   - Paginates and filters search results for all licenses and detailed API verification logs.
 
-## License
+6. **Password-Secured Admin Actions**
+   - Important actions (Revoking / Activating a license binding, Deleting records) require the administrator's password verification in a confirmation modal to prevent accidental or malicious clicks.
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+7. **SQLite Isolated Testing Suite**
+   - Includes 16 integration tests testing all validation states, localhost bypasses, domain transfers, and secure admin routes.
+   - Runs on an in-memory SQLite database (`:memory:`) to ensure local MySQL data is never altered or deleted during tests.
+
+---
+
+## ─── API Reference ───
+
+### Verify License
+Verify a client's purchase code and bind it to their domain.
+
+* **Endpoint**: `/api/licenses/verify`
+* **Method**: `POST`
+* **Content-Type**: `application/json`
+
+#### Request Payload
+```json
+{
+  "purchase_code": "CLIENT-PURCHASE-CODE-HERE",
+  "domain": "clientwebsite.com",
+  "old_domain": "previous-bound-domain.com"
+}
+```
+* `purchase_code` (Required | String): The Envato purchase license key.
+* `domain` (Required | String): The host domain where the product is running (automatically stripped of protocols and subdomains).
+* `old_domain` (Optional | String): Required only when migrating the license binding to a new domain.
+
+#### Response Formats
+
+##### A. Successful New Activation
+```json
+{
+  "status": true,
+  "message": "License registered and verified successfully.",
+  "buyer": "buyer_username",
+  "item_id": "12345678",
+  "item_name": "Healthy-AI - Premium AI Monolith",
+  "license_type": "Regular License",
+  "purchase_date": "2026-03-30T01:00:00Z",
+  "registered_domain": "clientwebsite.com"
+}
+```
+
+##### B. Successful Localhost Bypass
+```json
+{
+  "status": true,
+  "message": "Verified on localhost. License not registered yet.",
+  "buyer": "buyer_username",
+  "item_id": "12345678",
+  "registered_domain": null
+}
+```
+
+##### C. Error: Already Bound to Another Domain
+```json
+{
+  "status": false,
+  "message": "This purchase code is already registered to another domain. To transfer, please specify your old domain name.",
+  "registered_domain": "myclientwebsite.com"
+}
+```
+
+##### D. Error: License Revoked by Admin
+```json
+{
+  "status": false,
+  "message": "This license has been suspended/revoked by the administrator.",
+  "registered_domain": "clientwebsite.com"
+}
+```
+
+---
+
+## ─── Getting Started ───
+
+### Prerequisites
+* PHP 8.2 or higher
+* MySQL 8.0+
+* Composer
+* Node.js & NPM
+
+### Setup & Installation
+
+1. **Clone the repository and install PHP dependencies**:
+   ```bash
+   composer install
+   ```
+
+2. **Install and build frontend dependencies**:
+   ```bash
+   npm install
+   npm run build
+   ```
+
+3. **Configure Environment File**:
+   Copy `.env.example` to `.env` and configure your database settings and default credentials:
+   ```bash
+   cp .env.example .env
+   php artisan key:generate
+   ```
+
+   Make sure to configure the database variables:
+   ```env
+   DB_CONNECTION=mysql
+   DB_HOST=127.0.0.1
+   DB_PORT=8889 # Check MAMP/Local port
+   DB_DATABASE=license_checker
+   DB_USERNAME=root
+   DB_PASSWORD=root
+   ```
+
+4. **Run Migrations & Seed Default Data**:
+   ```bash
+   php artisan migrate --seed
+   ```
+
+5. **Start Development Servers**:
+   If your environment utilizes Laravel Herd, ensure you clear path conflicts to use your system PHP version:
+   ```bash
+   # Build & Watch Assets
+   npm run dev
+   
+   # Run Dev Server
+   unset HERD_PHP_84_INI_SCAN_DIR && export PATH="/opt/homebrew/bin:$PATH" && php artisan serve
+   ```
+
+   The Admin Panel will be accessible at: `http://127.0.0.1:8000/admin`
+   * **Default Login**: `admin@mydomain.com`
+   * **Default Password**: `Admin123!`
+   *(Update your password immediately in Settings)*
+
+---
+
+## ─── Running Tests ───
+
+Run PHPUnit tests using the isolated SQLite database environment:
+```bash
+unset HERD_PHP_84_INI_SCAN_DIR && export PATH="/opt/homebrew/bin:$PATH" && ./vendor/bin/phpunit
+```
